@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Memes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Source url</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Private</th>
+      <th>Duration</th>
+      <th>Loudness i</th>
+      <th>Loudness lra</th>
+      <th>Loudness tp</th>
+      <th>Loudness thresh</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @memes.each do |meme| %>
+      <tr>
+        <td><%= meme.name %></td>
+        <td><%= meme.source_url %></td>
+        <td><%= meme.start %></td>
+        <td><%= meme.end %></td>
+        <td><%= meme.private %></td>
+        <td><%= meme.duration %></td>
+        <td><%= meme.loudness_i %></td>
+        <td><%= meme.loudness_lra %></td>
+        <td><%= meme.loudness_tp %></td>
+        <td><%= meme.loudness_thresh %></td>
+        <td><%= link_to 'Show', meme %></td>
+        <td><%= link_to 'Edit', edit_meme_path(meme) %></td>
+        <td><%= link_to 'Destroy', meme, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Meme', new_meme_path %>

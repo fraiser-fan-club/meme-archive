@@ -1,0 +1,54 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @meme.name %>
+</p>
+
+<p>
+  <strong>Source url:</strong>
+  <%= @meme.source_url %>
+</p>
+
+<p>
+  <strong>Start:</strong>
+  <%= @meme.start %>
+</p>
+
+<p>
+  <strong>End:</strong>
+  <%= @meme.end %>
+</p>
+
+<p>
+  <strong>Private:</strong>
+  <%= @meme.private %>
+</p>
+
+<p>
+  <strong>Duration:</strong>
+  <%= @meme.duration %>
+</p>
+
+<p>
+  <strong>Loudness i:</strong>
+  <%= @meme.loudness_i %>
+</p>
+
+<p>
+  <strong>Loudness lra:</strong>
+  <%= @meme.loudness_lra %>
+</p>
+
+<p>
+  <strong>Loudness tp:</strong>
+  <%= @meme.loudness_tp %>
+</p>
+
+<p>
+  <strong>Loudness thresh:</strong>
+  <%= @meme.loudness_thresh %>
+</p>
+
+<%= link_to 'Edit', edit_meme_path(@meme) %> |
+<%= link_to 'Back', memes_path %>
