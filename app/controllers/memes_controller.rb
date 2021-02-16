@@ -64,6 +64,6 @@ class MemesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def meme_params
-      params.require(:meme).permit(:name, :source_url, :start, :end, :private, :duration, :loudness_i, :loudness_lra, :loudness_tp, :loudness_thresh)
+      params.require(:meme).permit(:name, :source_url, :start, :end, :private)
     end
 end
