@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_15_222756) do
+ActiveRecord::Schema.define(version: 2021_02_21_090157) do
+
+  create_table "commands", force: :cascade do |t|
+    t.string "name"
+    t.integer "meme_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["meme_id"], name: "index_commands_on_meme_id"
+  end
 
   create_table "memes", force: :cascade do |t|
     t.string "name"
@@ -27,4 +35,5 @@ ActiveRecord::Schema.define(version: 2021_02_15_222756) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "commands", "memes"
 end
