@@ -1,5 +1,8 @@
+require 'uri'
+
 class MemesController < ApplicationController
   before_action :set_meme, only: %i[ show edit update destroy ]
+  before_action :set_embed_url, only: %i[ show ]
 
   # GET /memes or /memes.json
   def index
@@ -57,12 +60,16 @@ class MemesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_meme
       @meme = Meme.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
+    def set_embed_url
+      uri = URI(@meme.source_url)
+      params = Hash[URI.decode_www_form(uri.query)]
+      @embed_url = params['v']
+    end
+
     def meme_params
       params.require(:meme).permit(:name, :source_url, :start, :end, :private)
     end

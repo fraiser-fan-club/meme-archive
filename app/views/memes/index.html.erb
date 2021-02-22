@@ -11,10 +11,6 @@
       <th>End</th>
       <th>Private</th>
       <th>Duration</th>
-      <th>Loudness i</th>
-      <th>Loudness lra</th>
-      <th>Loudness tp</th>
-      <th>Loudness thresh</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -28,10 +24,6 @@
         <td><%= meme.end %></td>
         <td><%= meme.private %></td>
         <td><%= meme.duration %></td>
-        <td><%= meme.loudness_i %></td>
-        <td><%= meme.loudness_lra %></td>
-        <td><%= meme.loudness_tp %></td>
-        <td><%= meme.loudness_thresh %></td>
         <td><%= link_to 'Show', meme %></td>
         <td><%= link_to 'Edit', edit_meme_path(meme) %></td>
         <td><%= link_to 'Destroy', meme, method: :delete, data: { confirm: 'Are you sure?' } %></td>

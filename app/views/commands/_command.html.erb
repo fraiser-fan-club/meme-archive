@@ -2,3 +2,9 @@
   <strong>Name:</strong>
   <%= command.name %>
 </p>
+
+<p>
+  <%= link_to 'Destroy', [command.meme, command],
+              method: :delete,
+              data: { confirm: "Are you sure?" } %>
+</p>

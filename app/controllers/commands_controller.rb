@@ -2,7 +2,14 @@ class CommandsController < ApplicationController
   def create
     @meme = Meme.find(params[:meme_id])
     @command = @meme.commands.create(command_params)
-    redirect_to meme_path(@meme)
+    redirect_to edit_meme_path(@meme)
+  end
+
+  def destroy
+    @meme = Meme.find(params[:meme_id])
+    @command = @meme.commands.find(params[:id])
+    @command.destroy
+    redirect_to edit_meme_path(@meme)
   end
 
   private
