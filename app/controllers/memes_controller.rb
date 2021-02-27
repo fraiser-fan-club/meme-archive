@@ -42,7 +42,10 @@ class MemesController < ApplicationController
 
   # PATCH/PUT /memes/1 or /memes/1.json
   def update
-    set_video
+    set_video if  meme_params[:source_url] != @meme.source_url ||
+      meme_params[:start] != @meme.start ||
+      meme_params[:end] != @meme.end
+    
     respond_to do |format|
       if @meme.update(meme_params)
         format.html { redirect_to @meme, notice: "Meme was successfully updated." }
@@ -77,13 +80,17 @@ class MemesController < ApplicationController
     def set_video
       uuid = SecureRandom.uuid
       path = "./tmp/#{uuid}.mp3"
-      metadata = `node ./lib/archiver.mjs #{@meme.source_url} #{@meme.start} #{@meme.end} #{path}`
+      metadata = `node ./lib/archiver.mjs #{meme_params[:source_url]} #{meme_params[:start]} #{meme_params[:end]} #{path}`
       metadata = JSON.parse(metadata, {symbolize_names: true})
-      @meme.duration = metadata[:duration]
+      puts metadata[:duration]
+      @meme.duration = (metadata[:duration].to_f * 60).to_i
       @meme.loudness_i = metadata[:loudness][:i]
       @meme.loudness_lra = metadata[:loudness][:lra]
       @meme.loudness_tp = metadata[:loudness][:tp]
       @meme.loudness_thresh = metadata[:loudness][:thresh]
+      if @meme.audio.attached?
+        @meme.audio.purge
+      end
       @meme.audio.attach(io: File.open(path), filename: "#{@meme.name}.mp3")
       File.delete(path)
       File.delete('./tmp/testdata')
