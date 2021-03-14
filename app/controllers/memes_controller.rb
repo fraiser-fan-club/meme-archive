@@ -2,6 +2,7 @@ require 'uri'
 require 'json'
 
 class MemesController < ApplicationController
+  before_action :logged_in_user
   before_action :set_meme, only: %i[ show edit update destroy ]
   before_action :set_embed_url, only: %i[ show ]
 
@@ -80,6 +81,7 @@ class MemesController < ApplicationController
     def set_video
       uuid = SecureRandom.uuid
       path = "./tmp/#{uuid}.mp3"
+      puts `node ./lib/archiver.mjs #{meme_params[:source_url]} #{meme_params[:start]} #{meme_params[:end]} #{path}`
       metadata = `node ./lib/archiver.mjs #{meme_params[:source_url]} #{meme_params[:start]} #{meme_params[:end]} #{path}`
       metadata = JSON.parse(metadata, {symbolize_names: true})
       puts metadata[:duration]
@@ -98,5 +100,11 @@ class MemesController < ApplicationController
 
     def meme_params
       params.require(:meme).permit(:name, :source_url, :start, :end, :private)
+    end
+
+    def logged_in_user 
+      unless logged_in?
+        redirect_to new_session_path
+      end
     end
 end
