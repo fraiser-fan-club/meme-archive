@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_28_215701) do
+ActiveRecord::Schema.define(version: 2021_03_18_221244) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -54,7 +54,7 @@ ActiveRecord::Schema.define(version: 2021_02_28_215701) do
     t.string "start"
     t.string "end"
     t.boolean "private"
-    t.integer "duration"
+    t.float "duration"
     t.float "loudness_i"
     t.float "loudness_lra"
     t.float "loudness_tp"
