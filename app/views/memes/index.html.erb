@@ -1,37 +1,26 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Memes</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Source url</th>
-      <th>Start</th>
-      <th>End</th>
-      <th>Private</th>
-      <th>Duration</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @memes.each do |meme| %>
-      <tr>
-        <td><%= meme.name %></td>
-        <td><%= meme.source_url %></td>
-        <td><%= meme.start %></td>
-        <td><%= meme.end %></td>
-        <td><%= meme.private %></td>
-        <td><%= meme.duration %></td>
-        <td><%= link_to 'Show', meme %></td>
-        <td><%= link_to 'Edit', edit_meme_path(meme) %></td>
-        <td><%= link_to 'Destroy', meme, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<% @memes.each do |meme| %>
+  <div class="meme" data-audio="<%= url_for(meme.audio) %>">
+    <div class="progress-bar"></div>
+    <div class="content">
+      <svg class="play"><use xlink:href="/icons/all.svg#play"/></svg>
+      <svg class="stop"><use xlink:href="/icons/all.svg#stop"/></svg>
+      <%= link_to meme.name, meme_path(meme), class: 'name' %>
+      <span><%= meme.duration %>s</span>
+      <span style="display: none;">><%= link_to 'Show', meme %></span>
+      <%= link_to edit_meme_path(meme), class: 'icon' do %>
+        <svg class="pen"><use xlink:href="/icons/all.svg#pen"/></svg>
+      <% end %>
+      <%= link_to meme, method: :delete, data: { confirm: 'Are you sure?' }, class: 'icon' do %>
+        <svg class="trash"><use xlink:href="/icons/all.svg#trash"/></svg>
+      <% end %>
+    </div>
+  </div>
+<% end %>
 
 <br>
 
-<%= link_to 'New Meme', new_meme_path %>
+<%= link_to 'Add Meme', new_meme_path, class: 'btn btn--fixed' %>
+
+<%= javascript_pack_tag 'meme' %>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>MemeArchive</title>
+    <title>Meme Archive</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -11,6 +11,13 @@
   </head>
 
   <body>
-    <%= yield %>
+    <header>
+      <%= link_to '/memes' do %>
+        <%= image_tag "logo.svg" %>
+      <% end %>
+    </header>
+    <main class="<%= current_page?('/memes') ? 'memes' : '' %>">
+      <%= yield %>
+    </main>
   </body>
 </html>
