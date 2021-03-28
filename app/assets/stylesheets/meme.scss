@@ -1,0 +1,57 @@
+@import "globals";
+
+.mp-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.mp-name {
+  display: block;
+  margin: 0 10px 0 0;
+}
+
+.mp-public,
+.mp-private {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+}
+
+.mp-public {
+  background: green;
+}
+
+.mp-private {
+  background: red;
+}
+
+.mp-commands {
+  margin: 30px 0;
+}
+
+.mp-info {
+  display: flex;
+}
+
+.mp-source,
+.mp-audio {
+  background: $light-gray;
+  border-radius: 10px;
+  padding: 10px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.mp-source {
+  flex: 2;
+  margin-right: 10px;
+}
+
+.mp-audio {
+  flex: 1;
+  margin-left: 10px;
+}

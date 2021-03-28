@@ -1,3 +1,35 @@
 // Place all the styles related to the Commands controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+@import "globals";
+
+.commands {
+  display: flex;
+}
+
+.command {
+  background: unset;
+
+  .command-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background: $gray;
+  }
+
+  a {
+    color: white;
+  }
+
+  a:hover ~ .command-bg {
+    background: red;
+  }
+}
+
+#new-command-form {
+  display: none;
+}

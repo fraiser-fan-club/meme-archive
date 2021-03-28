@@ -1,9 +1,12 @@
-<%= form_with model: [ @meme, @meme.commands.build ] do |form| %>
-  <p>
-    <%= form.label :name %><br>
-    <%= form.text_field :name %>
-  </p>
-  <p>
-    <%= form.submit %>
-  </p>
+<div class="pill pill--add" id="new-command-btn">
+  <i class="gg-math-plus"></i>
+</div>
+<%= form_with model: [ @meme, @meme.commands.build ], id: 'new-command-form' do |form| %>
+  <%= form.hidden_field :name %>
+  <div class="pill" id="command_name_field">
+    <span contenteditable class="input"></span>
+    <i class="gg-check" id="new-command-check"></i>
+  </div>
 <% end %>
+
+<%= javascript_pack_tag 'command' %>

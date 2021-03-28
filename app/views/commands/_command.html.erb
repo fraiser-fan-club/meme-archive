@@ -1,10 +1,10 @@
-<p>
-  <strong>Name:</strong>
+<div class="command pill">
   <%= command.name %>
-</p>
-
-<p>
-  <%= link_to 'Destroy', [command.meme, command],
+  <%= link_to [command.meme, command],
               method: :delete,
-              data: { confirm: "Are you sure?" } %>
-</p>
+              data: { confirm: "Are you sure?" } do%>
+    
+    <i class="gg-close"></i>
+  <% end %>
+  <div class="command-bg"></div>
+</div>

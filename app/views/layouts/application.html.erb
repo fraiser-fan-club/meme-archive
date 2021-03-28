@@ -6,6 +6,7 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <link href="https://css.gg/css?=|close|math-plus|pen|trash|check" rel="stylesheet">
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
@@ -16,7 +17,7 @@
         <%= image_tag "logo.svg" %>
       <% end %>
     </header>
-    <main class="<%= current_page?('/memes') ? 'memes' : '' %>">
+    <main>
       <%= yield %>
     </main>
   </body>

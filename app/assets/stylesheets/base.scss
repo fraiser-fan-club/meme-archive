@@ -32,3 +32,36 @@ main {
   bottom: 30px;
   right: 30px;
 }
+
+.pill {
+  display: flex;
+  border-radius: 100px;
+  color: white;
+  font-size: 18px;
+  padding: 3px 6px 3px 15px;
+  overflow: hidden;
+  position: relative;
+  background: $gray;
+  margin-right: 5px;
+  align-items: center;
+
+  &:last-child {
+    margin-right: unset;
+  }
+
+  i {
+    transform: scale(0.7);
+  }
+}
+
+.pill--add {
+  padding: 3px 6px;
+  background: $light-gray;
+  color: $gray;
+  cursor: pointer;
+}
+
+.hidden {
+  visibility: hidden;
+  position: fixed;
+}

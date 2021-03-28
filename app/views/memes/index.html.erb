@@ -2,17 +2,17 @@
 
 <% @memes.each do |meme| %>
   <div class="meme" data-audio="<%= url_for(meme.audio) %>">
-    <div class="progress-bar"></div>
-    <div class="content">
-      <svg class="play"><use xlink:href="/icons/all.svg#play"/></svg>
-      <svg class="stop"><use xlink:href="/icons/all.svg#stop"/></svg>
-      <%= link_to meme.name, meme_path(meme), class: 'name' %>
+    <div class="meme-progress-bar"></div>
+    <div class="meme-content">
+      <svg class="meme-play"><use xlink:href="/icons/all.svg#play"/></svg>
+      <svg class="meme-stop"><use xlink:href="/icons/all.svg#stop"/></svg>
+      <%= link_to meme.name, meme_path(meme), class: 'meme-name' %>
       <span><%= meme.duration %>s</span>
       <span style="display: none;">><%= link_to 'Show', meme %></span>
-      <%= link_to edit_meme_path(meme), class: 'icon' do %>
+      <%= link_to edit_meme_path(meme), class: 'meme-icon' do %>
         <svg class="pen"><use xlink:href="/icons/all.svg#pen"/></svg>
       <% end %>
-      <%= link_to meme, method: :delete, data: { confirm: 'Are you sure?' }, class: 'icon' do %>
+      <%= link_to meme, method: :delete, data: { confirm: 'Are you sure?' }, class: 'meme-icon' do %>
         <svg class="trash"><use xlink:href="/icons/all.svg#trash"/></svg>
       <% end %>
     </div>

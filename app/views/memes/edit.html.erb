@@ -1,12 +1,8 @@
-<h1>Editing Meme</h1>
 
 <%= render 'form', meme: @meme %>
 
-<h2>Commands</h2>
+<h3>Commands</h3>
 <%= render @meme.commands %>
-
-<h2>Add a command:</h2>
 <%= render 'commands/form' %>
 
-<%= link_to 'Show', @meme %> |
-<%= link_to 'Back', memes_path %>
+<%= link_to 'Show', @meme, class: 'btn btn--fixed'%>

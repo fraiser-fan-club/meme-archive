@@ -1,72 +1,73 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @meme.name %>
-</p>
+<div class="mp-title">
+  <h1 class="mp-name"><%= @meme.name %></h1>
+  <% access = @meme.private ? "private" : "public" %>
+  <div class="mp-<%= access  %>" title="<%= access.capitalize %>"></div>
+</div>
 
-<p>
-  <strong>Source url:</strong>
-  <%= @meme.source_url %>
-</p>
+<div class="mp-commands">
+  <h2>Commands</h2>
+  <div class="commands">
+    <%= render @meme.commands %>
+    <%= render 'commands/form' %>
+  </div>
+</div>
 
-<iframe
-  width="560"
-  height="315"
-  src="https://www.youtube-nocookie.com/embed/<%= @embed_url %>"
-  frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-  allowfullscreen>
-</iframe>
+<div class="mp-info">
+  <div class="mp-source">
+    <h2>Source</h2>
+    <iframe
+      width="560"
+      height="315"
+      src="https://www.youtube-nocookie.com/embed/<%= @embed_url %>"
+      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+    <%= @meme.source_url %>
+    <p>
+      <strong>Start:</strong>
+      <%= @meme.start %>
+    </p>
 
-<p>
-  <strong>Audio:</strong>
-  <audio
-    controls
-    src="<%= url_for(@meme.audio) %>">
-  </audio>
-</p>
+    <p>
+      <strong>End:</strong>
+      <%= @meme.end %>
+    </p>
+  </div>
 
-<p>
-  <strong>Start:</strong>
-  <%= @meme.start %>
-</p>
+  <div class="mp-audio">
+    <h2>Audio</h2>
+    <audio
+      controls
+      src="<%= url_for(@meme.audio) %>">
+    </audio>
 
-<p>
-  <strong>End:</strong>
-  <%= @meme.end %>
-</p>
+    <p>
+      <strong>Duration:</strong>
+      <%= @meme.duration %>s
+    </p>
 
-<p>
-  <strong>Private:</strong>
-  <%= @meme.private %>
-</p>
+    <p>
+      <strong>Integrated Loudness:</strong>
+      <%= @meme.loudness_i %> LUFS
+    </p>
 
-<p>
-  <strong>Duration:</strong>
-  <%= @meme.duration %>
-</p>
+    <p>
+      <strong>Loudness Range:</strong>
+      <%= @meme.loudness_lra %> LRA
+    </p>
 
-<p>
-  <strong>Loudness i:</strong>
-  <%= @meme.loudness_i %>
-</p>
+    <p>
+      <strong>True Peak:</strong>
+      <%= @meme.loudness_tp %> dBTP
+    </p>
 
-<p>
-  <strong>Loudness lra:</strong>
-  <%= @meme.loudness_lra %>
-</p>
-
-<p>
-  <strong>Loudness tp:</strong>
-  <%= @meme.loudness_tp %>
-</p>
-
-<p>
-  <strong>Loudness thresh:</strong>
-  <%= @meme.loudness_thresh %>
-</p>
-
-<h2>Commands</h2>
-<%= render @meme.commands %>
+    <p>
+      <strong>Loudness Threshold:</strong>
+      <%= @meme.loudness_thresh %> LUFS
+    </p>
+  </div>
+</div>
 
 <%= link_to 'Edit', edit_meme_path(@meme), class: 'btn btn--fixed' %>
