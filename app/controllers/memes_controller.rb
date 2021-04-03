@@ -20,6 +20,7 @@ class MemesController < ApplicationController
   # GET /memes/new
   def new
     @meme = Meme.new
+    @meme.commands.build
   end
 
   # GET /memes/1/edit
@@ -99,7 +100,7 @@ class MemesController < ApplicationController
     end
 
     def meme_params
-      params.require(:meme).permit(:name, :source_url, :start, :end, :private)
+      params.require(:meme).permit(:name, :source_url, :start, :end, :private, commands_attributes: [:id, :name, :_destroy])
     end
 
     def logged_in_user 

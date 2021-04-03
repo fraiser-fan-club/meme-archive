@@ -1,4 +1,4 @@
-<%= form_with(model: meme) do |form| %>
+<%= form_with model: meme, id: 'meme-form' do |form| %>
   <% if meme.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(meme.errors.count, "error") %> prohibited this meme from being saved:</h2>
@@ -32,11 +32,24 @@
   </div>
 
   <div class="field">
-    <%= form.label :private %>
+    <%= form.label :private, style: 'display: inline' %>
     <%= form.check_box :private %>
   </div>
+
+  <fieldset>
+    <legend>Commands</legend>
+    <em>Check the commands you wish to delete</em><br/>
+    <%= form.fields_for :commands do |command_form| %>
+      <%= command_form.text_field :name %>
+      <%= command_form.check_box :_destroy %>
+      <br/>
+    <% end %>
+    <button id="add-command" type="button">Add Command</button>
+  </fieldset>
 
   <div class="actions">
     <%= form.submit %>
   </div>
 <% end %>
+
+<%= javascript_pack_tag 'command' %>

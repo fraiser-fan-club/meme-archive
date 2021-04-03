@@ -1,9 +1,9 @@
 var audio;
 
 document.querySelectorAll(".meme").forEach((meme) => {
-  const playBtn = meme.querySelector(".play");
-  const stopBtn = meme.querySelector(".stop");
-  const progressBar = meme.querySelector(".progress-bar");
+  const playBtn = meme.querySelector(".meme-play");
+  const stopBtn = meme.querySelector(".meme-stop");
+  const progressBar = meme.querySelector(".meme-progress-bar");
 
   const onTimeUpdate = (event) => {
     const { currentTime, duration } = event.target;

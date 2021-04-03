@@ -1,28 +1,24 @@
-document.querySelectorAll("#new-command-form").forEach((form) => {
-  const addBtn = document.getElementById("new-command-btn");
-  const name = document.getElementById("command_name_field");
-  const input = name.querySelector(".input");
-  const check = document.getElementById("new-command-check");
-  addBtn.addEventListener("click", () => {
-    form.style.display = "block";
-    addBtn.style.display = "none";
-    input.focus();
+(function () {
+  const form = document.getElementById("meme-form");
+  const button = document.getElementById("add-command");
+  const commands = button.parentNode;
+  button.addEventListener("click", () => {
+    const epoch = Date.now();
+    const text = document.createElement("input");
+    text.type = "text";
+    text.value = "";
+    text.name = `meme[commands_attributes][${epoch}][name]`;
+    text.id = `meme_commands_attributes_${epoch}_name`;
+    commands.insertBefore(text, button);
+    const close = document.createElement("div");
+    close.setAttribute("class", "gg-close close-btn");
+    commands.insertBefore(close, button);
+    const br = document.createElement("br");
+    commands.insertBefore(br, button);
+    close.addEventListener("click", () => {
+      commands.removeChild(br);
+      commands.removeChild(close);
+      commands.removeChild(text);
+    });
   });
-  name.addEventListener("click", () => {
-    console.log("click");
-    input.focus();
-  });
-  input.addEventListener("input", (event) => {
-    const hiddenField = document.getElementById("command_name");
-    hiddenField.value = input.innerHTML;
-  });
-  input.addEventListener("keydown", (event) => {
-    if (event.code === "Enter") {
-      event.preventDefault();
-      form.submit();
-    }
-  });
-  check.addEventListener("click", () => {
-    form.submit();
-  });
-});
+})();
