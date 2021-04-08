@@ -46,12 +46,12 @@ class MemesController < ApplicationController
 
   # PATCH/PUT /memes/1 or /memes/1.json
   def update
-    set_video if  meme_params[:source_url] != @meme.source_url ||
-      meme_params[:start] != @meme.start ||
-      meme_params[:end] != @meme.end
+    @meme.assign_attributes(meme_params)
+
+    set_video if @meme.valid? && (@meme.source_url_changed? || @meme.start_changed? || @meme.end_changed?)
     
     respond_to do |format|
-      if @meme.update(meme_params)
+      if @meme.save
         format.html { redirect_to @meme, notice: "Meme was successfully updated." }
         format.json { render :show, status: :ok, location: @meme }
       else
@@ -84,7 +84,7 @@ class MemesController < ApplicationController
     def set_video
       uuid = SecureRandom.uuid
       path = "./tmp/#{uuid}.mp3"
-      metadata = `node ./lib/archiver.mjs #{meme_params[:source_url]} #{meme_params[:start]} #{meme_params[:end]} #{path}`
+      metadata = `node ./lib/archiver.mjs #{@meme.source_url} #{@meme.start} #{@meme.end} #{path}`
       metadata = JSON.parse(metadata, {symbolize_names: true})
       @meme.duration = durationToSecs(metadata[:duration])
       @meme.loudness_i = metadata[:loudness][:i]
