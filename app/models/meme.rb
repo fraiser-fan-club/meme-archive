@@ -14,6 +14,16 @@ class Meme < ApplicationRecord
 
   after_validation :format_source_url
 
+  # Override save to handle commands not being unique
+  def save
+    begin
+      super
+    rescue ActiveRecord::RecordNotUnique
+      errors.add(:commands, "must be unique")
+      false
+    end
+  end
+
   private
     def source_url_is_from_youtube
       uri = URI(source_url)

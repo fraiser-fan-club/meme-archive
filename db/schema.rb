@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_18_221244) do
+ActiveRecord::Schema.define(version: 2021_04_08_053820) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 2021_03_18_221244) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["meme_id"], name: "index_commands_on_meme_id"
+    t.index ["name"], name: "index_commands_on_name", unique: true
   end
 
   create_table "memes", force: :cascade do |t|
