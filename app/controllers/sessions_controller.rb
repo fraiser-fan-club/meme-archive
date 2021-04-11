@@ -27,6 +27,6 @@ class SessionsController < ApplicationController
     res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true) {|http|
       http.request(req)
     }
-    JSON.parse(res.body).any? {|guild| guild["id"] == '***REMOVED***'}
+    JSON.parse(res.body).any? {|guild| guild["id"] == ENV['DISCORD_GUILD_ID']}
   end
 end
