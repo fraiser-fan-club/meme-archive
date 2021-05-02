@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_11_163740) do
+ActiveRecord::Schema.define(version: 2021_05_02_173048) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -49,6 +49,15 @@ ActiveRecord::Schema.define(version: 2021_04_11_163740) do
     t.index ["name"], name: "index_commands_on_name", unique: true
   end
 
+  create_table "meme_tags", force: :cascade do |t|
+    t.integer "meme_id", null: false
+    t.integer "tag_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["meme_id"], name: "index_meme_tags_on_meme_id"
+    t.index ["tag_id"], name: "index_meme_tags_on_tag_id"
+  end
+
   create_table "memes", force: :cascade do |t|
     t.string "name"
     t.string "source_url"
@@ -65,6 +74,12 @@ ActiveRecord::Schema.define(version: 2021_04_11_163740) do
     t.index ["name"], name: "index_memes_on_name", unique: true
   end
 
+  create_table "tags", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "uid"
     t.string "provider"
@@ -77,4 +92,6 @@ ActiveRecord::Schema.define(version: 2021_04_11_163740) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "commands", "memes"
+  add_foreign_key "meme_tags", "memes"
+  add_foreign_key "meme_tags", "tags"
 end

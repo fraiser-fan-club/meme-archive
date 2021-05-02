@@ -1,8 +1,13 @@
 class Meme < ApplicationRecord
-  has_many :commands, validate: true
-  accepts_nested_attributes_for :commands, allow_destroy: true
+  has_many :commands
   has_one_attached :audio
+  has_many :meme_tags
+  has_many :tags, through: :meme_tags
+  
+  accepts_nested_attributes_for :commands, allow_destroy: true
+  accepts_nested_attributes_for :tags, allow_destroy: true
 
+  validates_associated :commands, :tags
   validates :name, presence: true, uniqueness: true
   validates :source_url, presence: true
   validates :start, :end, presence: true,

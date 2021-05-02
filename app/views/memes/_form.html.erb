@@ -47,9 +47,26 @@
     <button id="add-command" type="button">Add Command</button>
   </fieldset>
 
+  <fieldset>
+    <legend>Tags</legend>
+    <em>Check the tags you wish to remove</em><br/>
+    <datalist id="tag-options">
+      <% Tag.all.each do |tag| %>
+        <option value="<%= tag.name %>">
+      <% end %>
+    </datalist>
+    <%= form.fields_for :tags do |tag_form| %>
+      <%= tag_form.text_field :name, disabled: true %>
+      <%= tag_form.check_box :_destroy %>
+      <br/>
+    <% end %>
+    <button id="add-tag" type="button">Add Tag</button>
+  </fieldset>
+
   <div class="actions">
     <%= form.submit %>
   </div>
 <% end %>
 
 <%= javascript_pack_tag 'command' %>
+<%= javascript_pack_tag 'tag' %>

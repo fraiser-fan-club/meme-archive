@@ -13,6 +13,15 @@
   </div>
 </div>
 
+<% if @meme.tags.any? %>
+  <div class="mp-commands">
+    <h2>Tags</h2>
+    <div class="commands">
+      <%= render @meme.tags %>
+    </div>
+  </div>
+<% end %>
+
 <div class="mp-info">
   <div class="mp-source">
     <h2>Source</h2>
