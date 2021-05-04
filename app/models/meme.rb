@@ -1,4 +1,6 @@
 class Meme < ApplicationRecord
+  include MemesHelper
+
   has_many :commands
   has_one_attached :audio
   has_many :meme_tags
@@ -6,7 +8,7 @@ class Meme < ApplicationRecord
   
   accepts_nested_attributes_for :commands, allow_destroy: true
   accepts_nested_attributes_for :tags, allow_destroy: true
-
+  
   validates_associated :commands, :tags
   validates :name, presence: true, uniqueness: true
   validates :source_url, presence: true
@@ -18,6 +20,8 @@ class Meme < ApplicationRecord
   validate :source_url_is_from_youtube
 
   after_validation :format_source_url
+  before_save :set_video,
+    if: Proc.new { source_url_changed? || start_changed? || end_changed? }
 
   # Override save to handle commands not being unique
   def save
@@ -30,6 +34,7 @@ class Meme < ApplicationRecord
   end
 
   private
+
     def source_url_is_from_youtube
       uri = URI(source_url)
       if %w(youtube.com www.youtube.com).none?(uri.host)
@@ -46,5 +51,22 @@ class Meme < ApplicationRecord
       params = Hash[URI.decode_www_form(uri.query)]
       id = params["v"]
       self.source_url = "https://www.youtube.com/watch?v=#{id}"
+    end
+
+    def set_video
+      uuid = SecureRandom.uuid
+      path = "./tmp/#{uuid}.mp3"
+      metadata = `node ./lib/archiver.mjs #{self.source_url} #{self.start} #{self.end} #{path}`
+      metadata = JSON.parse(metadata, {symbolize_names: true})
+      self.duration = durationToSecs(metadata[:duration])
+      self.loudness_i = metadata[:loudness][:i]
+      self.loudness_lra = metadata[:loudness][:lra]
+      self.loudness_tp = metadata[:loudness][:tp]
+      self.loudness_thresh = metadata[:loudness][:thresh]
+      if self.audio.attached?
+        self.audio.purge
+      end
+      self.audio.attach(io: File.open(path), filename: "#{self.name.parameterize}.mp3")
+      File.delete(path)
     end
 end

@@ -32,8 +32,6 @@ class MemesController < ApplicationController
   def create
     @meme = Meme.new(meme_params)
 
-    set_video
-
     respond_to do |format|
       if @meme.save
         format.html { redirect_to @meme, notice: "Meme was successfully created." }
@@ -49,8 +47,6 @@ class MemesController < ApplicationController
   def update
     @meme.assign_attributes(meme_params)
 
-    set_video if @meme.valid? && (@meme.source_url_changed? || @meme.start_changed? || @meme.end_changed?)
-    
     respond_to do |format|
       if @meme.save
         format.html { redirect_to @meme, notice: "Meme was successfully updated." }
@@ -80,24 +76,6 @@ class MemesController < ApplicationController
       uri = URI(@meme.source_url)
       params = Hash[URI.decode_www_form(uri.query)]
       @embed_url = params['v']
-    end
-
-    def set_video
-      uuid = SecureRandom.uuid
-      path = "./tmp/#{uuid}.mp3"
-      metadata = `node ./lib/archiver.mjs #{@meme.source_url} #{@meme.start} #{@meme.end} #{path}`
-      metadata = JSON.parse(metadata, {symbolize_names: true})
-      @meme.duration = durationToSecs(metadata[:duration])
-      @meme.loudness_i = metadata[:loudness][:i]
-      @meme.loudness_lra = metadata[:loudness][:lra]
-      @meme.loudness_tp = metadata[:loudness][:tp]
-      @meme.loudness_thresh = metadata[:loudness][:thresh]
-      if @meme.audio.attached?
-        @meme.audio.purge
-      end
-      @meme.audio.attach(io: File.open(path), filename: "#{@meme.name}.mp3")
-      File.delete(path)
-      File.delete('./tmp/testdata')
     end
 
     def meme_params
