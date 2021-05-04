@@ -20,7 +20,8 @@ class Meme < ApplicationRecord
   validate :source_url_is_from_youtube
 
   after_validation :format_source_url
-  before_save :set_video,
+  before_create :set_video
+  before_update :set_video,
     if: Proc.new { source_url_changed? || start_changed? || end_changed? }
 
   # Override save to handle commands not being unique
