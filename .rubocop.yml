@@ -1,0 +1,13 @@
+inherit_from:
+  - node_modules/@prettier/plugin-ruby/rubocop.yml
+
+require:
+  - rubocop-performance
+  - rubocop-rails
+
+Layout/LineLength:
+  Enabled: true
+  Max: 80
+
+Style/GuardClause:
+  MinBodyLength: 2
