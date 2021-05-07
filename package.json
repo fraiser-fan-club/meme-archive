@@ -1,22 +1,6 @@
 {
   "name": "meme-archive",
   "private": true,
-  "scripts": {
-    "preinstall": "npx only-allow pnpm"
-  },
-  "prettier": {
-    "plugins": [
-      "./node_modules/@prettier/plugin-ruby"
-    ],
-    "overrides": [
-      {
-        "files": "*.rb",
-        "options": {
-          "parser": "ruby"
-        }
-      }
-    ]
-  },
   "dependencies": {
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",

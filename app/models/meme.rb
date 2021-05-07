@@ -19,7 +19,7 @@ class Meme < ApplicationRecord
             presence: true,
             format: {
               with: /\A(?:(?:\d{1,}:)?\d{1,2}:\d{2}(?:\.\d+)?|\d+(?:\.\d+)?)\z/,
-              messgae: 'must have format [HH:]MM:SS[.m...] or S+[.m...]'
+              messgae: 'must have format [HH:]MM:SS[.m...] or S+[.m...]',
             }
   validates :commands, presence: true
   validate :source_url_is_from_youtube
