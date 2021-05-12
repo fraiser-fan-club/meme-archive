@@ -11,30 +11,36 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
+  <fieldset>
+    <legend>Info</legend>
+    <div class="field">
+      <%= form.label :name %>
+      <%= form.text_field :name, size: 50 %>
+    </div>
 
-  <div class="field">
-    <%= form.label :source_url %>
-    <%= form.url_field :source_url %>
-  </div>
+    <div class="field">
+      <%= form.label :private, style: 'display: inline' %>
+      <%= form.check_box :private %>
+    </div>
+  </fieldset>
 
-  <div class="field">
-    <%= form.label :start %>
-    <%= form.text_field :start %>
-  </div>
+  <fieldset>
+    <legend>Source</legend>
+    <div class="field">
+      <%= form.label :source_url %>
+      <%= form.url_field :source_url, size: 50 %>
+    </div>
 
-  <div class="field">
-    <%= form.label :end %>
-    <%= form.text_field :end %>
-  </div>
+    <div class="field">
+      <%= form.label :start %>
+      <%= form.text_field :start %>
+    </div>
 
-  <div class="field">
-    <%= form.label :private, style: 'display: inline' %>
-    <%= form.check_box :private %>
-  </div>
+    <div class="field">
+      <%= form.label :end %>
+      <%= form.text_field :end %>
+    </div>
+  </fieldset>
 
   <fieldset>
     <legend>Commands</legend>
@@ -56,7 +62,7 @@
       <% end %>
     </datalist>
     <%= form.fields_for :tags do |tag_form| %>
-      <%= tag_form.text_field :name, disabled: true %>
+      <%= tag_form.text_field :name %>
       <%= tag_form.check_box :_destroy %>
       <br/>
     <% end %>

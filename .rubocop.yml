@@ -11,3 +11,6 @@ Layout/LineLength:
 
 Style/GuardClause:
   MinBodyLength: 2
+
+Metrics/MethodLength:
+  Max: 15
