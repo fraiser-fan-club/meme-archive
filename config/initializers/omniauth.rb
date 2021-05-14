@@ -1,3 +1,6 @@
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :discord, ENV['DISCORD_CLIENT_ID'], ENV['DISCORD_CLIENT_SECRET'], scope: 'identify guilds'
+  provider :discord,
+           Rails.application.credentials.dig(:discord, :client_id),
+           Rails.application.credentials.dig(:discord, :client_secret),
+           scope: 'identify guilds'
 end

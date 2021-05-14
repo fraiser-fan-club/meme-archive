@@ -14,3 +14,6 @@ Style/GuardClause:
 
 Metrics/MethodLength:
   Max: 15
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
