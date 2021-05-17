@@ -1,8 +1,7 @@
 class SessionsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :create
 
-  def new
-  end
+  def new; end
 
   def create
     if teamloser_guild?
@@ -16,6 +15,7 @@ class SessionsController < ApplicationController
   end
 
   private
+
   def auth_hash
     request.env['omniauth.auth']
   end
@@ -24,9 +24,14 @@ class SessionsController < ApplicationController
     uri = URI('https://discord.com/api/v8/users/@me/guilds')
     req = Net::HTTP::Get.new(uri)
     req['Authorization'] = "Bearer #{auth_hash[:credentials][:token]}"
-    res = Net::HTTP.start(uri.hostname, uri.port, :use_ssl => true) {|http|
-      http.request(req)
-    }
-    JSON.parse(res.body).any? {|guild| guild["id"] == ENV['DISCORD_GUILD_ID']}
+    res =
+      Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+        http.request(req)
+      end
+    JSON
+      .parse(res.body)
+      .any? do |guild|
+        guild['id'] == Rails.application.credentials.dig(:discord, :guild_id)
+      end
   end
 end
