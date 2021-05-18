@@ -5,5 +5,5 @@ Rails.application.routes.draw do
   end
   resources :sessions
   get '/auth/:provider/callback', to: 'sessions#create'
-  root to: "memes#index"
+  root to: 'memes#index'
 end
