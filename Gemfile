@@ -68,6 +68,7 @@ end
 
 group :production do
   gem 'sd_notify'
+  gem "aws-sdk-s3", require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
