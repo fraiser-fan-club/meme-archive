@@ -71,8 +71,8 @@ class Meme < ApplicationRecord
       audio.purge if audio.attached?
       audio.attach(io: File.open(path), filename: "#{name.parameterize}.mp3")
     rescue JSON::ParserError => e
-      puts result
-      raise "Failed to scrape audio"
+      logger.error result
+      errors.add(:base, 'Failed to scrape audio from source URL')
     ensure
       File.delete(path)
     end
