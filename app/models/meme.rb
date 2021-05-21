@@ -61,14 +61,21 @@ class Meme < ApplicationRecord
   end
 
   def scrape_audio
-    uuid = SecureRandom.uuid
-    path = "./tmp/#{uuid}.mp3"
-    metadata =
+    begin
+      uuid = SecureRandom.uuid
+      path = "./tmp/#{uuid}.mp3"
+      result =
       `node ./lib/archiver.mjs #{source_url} #{start} #{self.end} #{path}`
-    update_meta_data(JSON.parse(metadata, { symbolize_names: true }))
-    audio.purge if audio.attached?
-    audio.attach(io: File.open(path), filename: "#{name.parameterize}.mp3")
-    File.delete(path)
+      metadata = JSON.parse(result, { symbolize_names: true })
+      update_meta_data(metadata)
+      audio.purge if audio.attached?
+      audio.attach(io: File.open(path), filename: "#{name.parameterize}.mp3")
+    rescue JSON::ParserError => e
+      puts result
+      raise "Failed to scrape audio"
+    ensure
+      File.delete(path)
+    end
   end
 
   def update_meta_data(metadata)
