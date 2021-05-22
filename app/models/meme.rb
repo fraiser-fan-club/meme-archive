@@ -61,20 +61,20 @@ class Meme < ApplicationRecord
   end
 
   def scrape_audio
-    begin
-      uuid = SecureRandom.uuid
-      path = "./tmp/#{uuid}.mp3"
-      result =
-      `node ./lib/archiver.mjs #{source_url} #{start} #{self.end} #{path}`
-      metadata = JSON.parse(result, { symbolize_names: true })
+    uuid = SecureRandom.uuid
+    path = "./tmp/#{uuid}.mp3"
+    stdout, stderr, status = Open3.capture3("node ./lib/archiver.mjs #{source_url} #{start} #{self.end} #{path}")
+    puts status
+    if status.success?
+      metadata = JSON.parse(stdout, { symbolize_names: true })
       update_meta_data(metadata)
       audio.purge if audio.attached?
       audio.attach(io: File.open(path), filename: "#{name.parameterize}.mp3")
-    rescue JSON::ParserError => e
-      logger.error result
-      errors.add(:base, 'Failed to scrape audio from source URL')
-    ensure
       File.delete(path)
+    elsif
+      logger.error stderr
+      errors.add(:base, 'Failed to scrape audio from source URL')
+      throw :abort
     end
   end
 
