@@ -44,3 +44,25 @@ set :rbenv_ruby, File.read('.ruby-version').strip
 set :rbenv_prefix, '/usr/bin/rbenv exec'
 set :rbenv_map_bins, %w{rake gem bundle ruby rails}
 set :rbenv_roles, :all # default value
+
+append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system', 'public/uploads', 'node_modules', 'db'
+append :linked_files, 'config/master.key'
+
+namespace :deploy do
+  namespace :check do
+    before :linked_files, :set_master_key do
+      on roles(:app), in: :sequence, wait: 10 do
+        unless test("[ -f #{shared_path}/config/master.key ]")
+          upload! 'config/master.key', "#{shared_path}/config/master.key"
+        end
+      end
+    end
+  end
+end
+
+set :puma_systemctl_user, :user
+set :puma_init_active_record, true
+
+set :puma_service_unit_env_vars, %w[
+  DISCORD_APP=memebot
+]

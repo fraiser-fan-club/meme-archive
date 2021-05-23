@@ -59,3 +59,7 @@ server "archive.memebot.life", user: "memelord", roles: %w{app db web}
 #     auth_methods: %w(publickey password)
 #     # password: "please use keys"
 #   }
+
+set :default_env, {
+  'DISCORD_APP': 'memebot'
+}
