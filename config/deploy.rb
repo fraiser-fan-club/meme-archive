@@ -21,10 +21,10 @@ set :deploy_to, "/home/memelord/meme-archive"
 # set :pty, true
 
 # Default value for :linked_files is []
-# append :linked_files, "config/database.yml"
+append :linked_files, 'config/master.key', 'db/production.sqlite3'
 
 # Default value for linked_dirs is []
-# append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
+append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system', 'public/uploads', 'node_modules'
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -40,13 +40,16 @@ set :deploy_to, "/home/memelord/meme-archive"
 
 set :rbenv_type, :user
 set :rbenv_ruby, File.read('.ruby-version').strip
-# set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
 set :rbenv_prefix, '/usr/bin/rbenv exec'
 set :rbenv_map_bins, %w{rake gem bundle ruby rails}
 set :rbenv_roles, :all # default value
 
-append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system', 'public/uploads', 'node_modules', 'db'
-append :linked_files, 'config/master.key'
+set :puma_systemctl_user, :user
+set :puma_init_active_record, true
+
+set :puma_service_unit_env_vars, %w[
+  DISCORD_APP=memebot
+]
 
 namespace :deploy do
   namespace :check do
@@ -59,13 +62,6 @@ namespace :deploy do
     end
   end
 end
-
-set :puma_systemctl_user, :user
-set :puma_init_active_record, true
-
-set :puma_service_unit_env_vars, %w[
-  DISCORD_APP=memebot
-]
 
 namespace :deploy do
   after :restart, :clear_cache do
@@ -82,6 +78,16 @@ namespace :deploy do
       within release_path do
         with rails_env: fetch(:rails_env)  do
           execute :rake, 'db:seed'
+        end
+      end
+    end
+  end
+
+  task :purge_unattached do
+    on primary fetch(:app) do
+      within release_path do
+        with rails_env: fetch(:rails_env)  do
+          execute :rake, 'active_storage:purge_unattached'
         end
       end
     end
