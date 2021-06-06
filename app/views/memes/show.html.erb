@@ -32,7 +32,11 @@
       frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen>
     </iframe>
-    <%= @meme.source_url %>
+    <p>
+      <strong>Source URL:</strong>
+      <a href="<%= @meme.source_url %>"><%= @meme.source_url %></a>
+    </p>
+
     <p>
       <strong>Start:</strong>
       <%= @meme.start %>
@@ -46,10 +50,22 @@
 
   <div class="mp-audio">
     <h2>Audio</h2>
-    <audio
-      controls
-      src="<%= url_for(@meme.audio) %>">
-    </audio>
+    <p>
+      <strong>File (mp3):</strong>
+      <a href="<%= url_for(@meme.audio) %>" download>Download</a>
+      <audio
+        controls
+        src="<%= url_for(@meme.audio) %>">
+      </audio>
+    </p>
+
+    <p>
+      <strong>File (opus):</strong>
+      <a href="<%= url_for(@meme.audio_opus) %>" download>Download</a>
+      <audio controls>
+        <source src="<%= url_for(@meme.audio_opus) %>" type="audio/ogg; codecs=opus">
+      </audio>
+    </p>
 
     <p>
       <strong>Duration:</strong>
@@ -75,6 +91,7 @@
       <strong>Loudness Threshold:</strong>
       <%= @meme.loudness_thresh %> LUFS
     </p>
+
   </div>
 </div>
 

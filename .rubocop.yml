@@ -15,5 +15,8 @@ Style/GuardClause:
 Metrics/MethodLength:
   Max: 15
 
+Metrics/ClassLength:
+  CountAsOne: ["Array", "Hash"]
+
 Style/FrozenStringLiteralComment:
   Enabled: false

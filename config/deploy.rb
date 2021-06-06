@@ -84,7 +84,7 @@ namespace :deploy do
   end
 
   task :purge_unattached do
-    on primary fetch(:app) do
+    on roles(:all) do
       within release_path do
         with rails_env: fetch(:rails_env)  do
           execute :rake, 'active_storage:purge_unattached'

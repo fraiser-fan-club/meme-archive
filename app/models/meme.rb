@@ -5,6 +5,7 @@ class Meme < ApplicationRecord
 
   has_many :commands
   has_one_attached :audio
+  has_one_attached :audio_opus
   has_many :meme_tags
   has_many :tags, through: :meme_tags
 
@@ -61,24 +62,64 @@ class Meme < ApplicationRecord
   end
 
   def scrape_audio
+    set_path
+    metadata = download_audio
+    update_metadata(metadata)
+    purge_old_audio
+    attach_new_audio
+    delete_local_audio
+  end
+
+  def set_path
     uuid = SecureRandom.uuid
-    path = "./tmp/#{uuid}.mp3"
-    stdout, stderr, status = Open3.capture3("node ./lib/archiver.mjs #{source_url} #{start} #{self.end} #{path}")
-    puts status
+    @path = "./tmp/#{uuid}.mp3"
+    @path_opus = "./tmp/#{uuid}.opus"
+  end
+
+  def download_audio
+    stdout, stderr, status = run_archiver
     if status.success?
-      metadata = JSON.parse(stdout, { symbolize_names: true })
-      update_meta_data(metadata)
-      audio.purge if audio.attached?
-      audio.attach(io: File.open(path), filename: "#{name.parameterize}.mp3")
-      File.delete(path)
-    elsif
+      JSON.parse(stdout, { symbolize_names: true })
+    else
+      logger.debug stdout
       logger.error stderr
       errors.add(:base, 'Failed to scrape audio from source URL')
       throw :abort
     end
   end
 
-  def update_meta_data(metadata)
+  def run_archiver
+    cmd = [
+      'node',
+      './lib/archiver.mjs',
+      source_url,
+      start,
+      self.end,
+      @path,
+      @path_opus,
+    ]
+    Open3.capture3(cmd.join(' '))
+  end
+
+  def purge_old_audio
+    audio.purge if audio.attached?
+    audio_opus.purge if audio_opus.attached?
+  end
+
+  def attach_new_audio
+    audio.attach(io: File.open(@path), filename: "#{name.parameterize}.mp3")
+    audio_opus.attach(
+      io: File.open(@path_opus),
+      filename: "#{name.parameterize}.opus",
+    )
+  end
+
+  def delete_local_audio
+    File.delete(@path)
+    File.delete(@path_opus)
+  end
+
+  def update_metadata(metadata)
     self.duration = durationToSecs(metadata[:duration])
     self.loudness_i = metadata[:loudness][:i]
     self.loudness_lra = metadata[:loudness][:lra]

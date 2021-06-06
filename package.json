@@ -5,15 +5,15 @@
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
-    "@rails/webpacker": "5.2.1",
+    "@rails/webpacker": "5.4.0",
     "fluent-ffmpeg": "^2.1.2",
     "turbolinks": "^5.2.0",
-    "ytdl-core": "latest"
+    "ytdl-core": "4.8.2"
   },
   "version": "0.1.0",
   "devDependencies": {
     "@prettier/plugin-ruby": "^1.5.5",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.1",
     "webpack-dev-server": "^3.11.2"
   }
 }
