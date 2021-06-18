@@ -30,8 +30,8 @@ class Meme < ApplicationRecord
   before_update :scrape_audio, if: :should_update_audio?
 
   # Override save to handle commands not being unique
-  def save
-    super
+  def save(**options)
+    super(**options)
   rescue ActiveRecord::RecordNotUnique
     errors.add(:commands, 'must be unique')
     false
@@ -40,20 +40,31 @@ class Meme < ApplicationRecord
   private
 
   def source_url_is_from_youtube
+    return if source_url.blank?
     uri = URI(source_url)
-    params = Hash[URI.decode_www_form(uri.query)]
-    if %w[youtube.com www.youtube.com].none?(uri.host)
+    unless %w[youtube.com www.youtube.com youtu.be].include?(uri.host)
       errors.add(:source_url, 'must be from a youtube domain')
     end
-    unless params.include?('v')
-      errors.add(:source_url, 'must include a video id param')
+    if get_video_id(uri).blank?
+      errors.add(:source_url, 'must include a video id')
+    end
+  end
+
+  def get_video_id(uri)
+    case uri.host
+    when 'youtube.com', 'www.youtube.com'
+      return unless uri.query
+      params = Hash[URI.decode_www_form(uri.query)]
+      params['v']
+    when 'youtu.be'
+      uri.path.split('/')[1]
     end
   end
 
   def format_source_url
+    return if errors.any?
     uri = URI(source_url)
-    params = Hash[URI.decode_www_form(uri.query)]
-    id = params['v']
+    id = get_video_id(uri)
     self.source_url = "https://www.youtube.com/watch?v=#{id}"
   end
 
@@ -120,7 +131,7 @@ class Meme < ApplicationRecord
   end
 
   def update_metadata(metadata)
-    self.duration = durationToSecs(metadata[:duration])
+    self.duration = duration_to_secs(metadata[:duration])
     self.loudness_i = metadata[:loudness][:i]
     self.loudness_lra = metadata[:loudness][:lra]
     self.loudness_tp = metadata[:loudness][:tp]
