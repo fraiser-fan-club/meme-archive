@@ -1,40 +1,66 @@
 require 'json/add/date_time'
-require "#{Rails.root}/app/helpers/memes_helper"
+require Rails.root.join('app/helpers/memes_helper')
 include MemesHelper
-
-memes_source_url =
-  'https://memebot.nyc3.digitaloceanspaces.com/memebot/memes.json'
-meme_url_prefix = 'https://memebot.nyc3.digitaloceanspaces.com/memebot/audio/'
 
 namespace :active_record do
   desc 'Adds meme from legacy memebot'
   task add_memes: :environment do
-    memes = JSON.parse(URI.open(meme_source_url).read, create_additions: true)
-    memes
-      .first(2)
-      .each do |meme|
-        commands =
-          meme['commands'].map { |command| Command.create(name: command) }
-        tags = meme['tags'].map { |tag| Tag.find_or_create_by(name: tag) }
-        newMeme =
-          Meme.upsert(
-            name: meme['name'],
-            private: meme['private'],
-            created_at: meme['createdAt'],
-            updated_at: DateTime.now,
-            commands: commands,
-            tags: tags,
-            duration: durationToSecs(meme['duration']),
-            loudness_i: meme['loudness']['i'],
-            loudness_lra: meme['loudness']['lra'],
-            loudness_tp: meme['loudness']['tp'],
-            loudness_thresh: meme['loudness']['thresh'],
-          )
-        meme_url = meme_url_prefix + meme['name'] + '.opus'
-        newMeme.audio.attach(
-          io: URI.open.read,
-          filename: "#{name.parameterize}.mp3",
-        )
-      end
+    meme_source_url =
+      'https://memebot.nyc3.digitaloceanspaces.com/memebot/memes.json'
+    memes =
+      JSON.parse(URI.parse(meme_source_url).open.read, create_additions: true)
+    memes.first(1).each { |meme| create_meme(meme) }
+  end
+end
+
+def create_meme(meme)
+  upsert_meme(meme)
+  name = meme['name']
+  new_meme = Meme.find_by(name: name)
+  create_commands(new_meme, [*meme['aliases'], name])
+  create_tags(new_meme, meme['tags'])
+  meme_url_prefix = 'https://memebot.nyc3.digitaloceanspaces.com/memebot/audio/'
+  meme_url = "#{meme_url_prefix}#{name}.opus"
+  IO.copy_stream(URI.parse(meme_url).open, 'tmp/test.opus')
+  `ffmpeg -i tmp/test.opus tmp/test.mp3`
+  new_meme.updated_at = DateTime.now
+  new_meme.audio_opus.attach(
+    io: File.open('tmp/test.opus'),
+    filename: "#{name.parameterize}.opus",
+  )
+  new_meme.audio.attach(
+    io: File.open('tmp/test.mp3'),
+    filename: "#{name.parameterize}.mp3",
+  )
+  new_meme.save(validate: false)
+end
+
+# rubocop:disable Rails/SkipsModelValidations
+def upsert_meme(meme)
+  Meme.upsert(
+    {
+      name: meme['name'],
+      private: meme['private'],
+      created_at: meme['createdAt'],
+      updated_at: DateTime.now,
+      duration: duration_to_secs(meme['duration']),
+      loudness_i: meme['loudness']['i'],
+      loudness_lra: meme['loudness']['lra'],
+      loudness_tp: meme['loudness']['tp'],
+      loudness_thresh: meme['loudness']['thresh'],
+    },
+    unique_by: :name,
+  )
+end
+# rubocop:enable Rails/SkipsModelValidations
+
+def create_commands(meme, commands)
+  commands.map { |command| Command.create(name: command, meme_id: meme.id) }
+end
+
+def create_tags(meme, tags)
+  tags.map do |tag|
+    tag = Tag.find_or_create_by(name: tag)
+    MemeTag.create(meme_id: meme.id, tag_id: tag.id)
   end
 end
