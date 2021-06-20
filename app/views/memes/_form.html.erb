@@ -57,12 +57,12 @@
     <legend>Tags</legend>
     <em>Check the tags you wish to remove</em><br/>
     <datalist id="tag-options">
-      <% Tag.all.each do |tag| %>
+      <% (Tag.all - @meme.tags).each do |tag| %>
         <option value="<%= tag.name %>">
       <% end %>
     </datalist>
     <%= form.fields_for :tags do |tag_form| %>
-      <%= tag_form.text_field :name %>
+      <%= tag_form.text_field :name, :readonly => true  %>
       <%= tag_form.check_box :_destroy %>
       <br/>
     <% end %>

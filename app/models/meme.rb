@@ -10,7 +10,6 @@ class Meme < ApplicationRecord
   has_many :tags, through: :meme_tags
 
   accepts_nested_attributes_for :commands, allow_destroy: true
-  accepts_nested_attributes_for :tags, allow_destroy: true
   validates_associated :commands, :tags
 
   validates :name, presence: true, uniqueness: true
@@ -37,7 +36,31 @@ class Meme < ApplicationRecord
     false
   end
 
+  def tags_attributes=(attributes)
+    tags = attributes.values
+    tags_d, tags_c = tags.partition do |tag| 
+      tag.key?('_destroy') ? tag['_destroy'].to_i.positive? : false
+    end
+    destroy_tag_associations(tags_d)
+    create_tag_associations(tags_c)
+  end
+
   private
+
+  def create_tag_associations(tags)
+    tags.each do |tag_attr|
+      tag = Tag.find_or_create_by(name: tag_attr['name'])
+      MemeTag.find_or_create_by({meme: self, tag: tag})
+    end
+  end
+
+  def destroy_tag_associations(tags)
+    tags.each do |tag_attr|
+      tag = Tag.find_by(name: tag_attr['name'])
+      MemeTag.destroy_by({meme: self, tag: tag})
+      tag.destroy if MemeTag.where(tag: tag).count <= 0
+    end
+  end
 
   def source_url_is_from_youtube
     return if source_url.blank?
@@ -47,17 +70,6 @@ class Meme < ApplicationRecord
     end
     if get_video_id(uri).blank?
       errors.add(:source_url, 'must include a video id')
-    end
-  end
-
-  def get_video_id(uri)
-    case uri.host
-    when 'youtube.com', 'www.youtube.com'
-      return unless uri.query
-      params = Hash[URI.decode_www_form(uri.query)]
-      params['v']
-    when 'youtu.be'
-      uri.path.split('/')[1]
     end
   end
 

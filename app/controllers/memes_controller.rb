@@ -78,13 +78,11 @@ class MemesController < ApplicationController
   end
 
   def set_embed_url
-    if @meme.source_url.blank?
-      @embed_url = 'ubFq-wV3Eic'
-      return
+    @embed_url = if @meme.source_url.blank?
+      'ubFq-wV3Eic'
+    else 
+      get_video_id(URI(@meme.source_url))
     end
-    uri = URI(@meme.source_url)
-    params = Hash[URI.decode_www_form(uri.query)]
-    @embed_url = params['v']
   end
 
   def meme_params
