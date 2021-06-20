@@ -92,4 +92,14 @@ namespace :deploy do
       end
     end
   end
+
+  task :add_memes do
+    on roles(:all) do
+      within release_path do
+        with rails_env: fetch(:rails_env)  do
+          execute :rake, 'active_record:add_memes'
+        end
+      end
+    end
+  end
 end

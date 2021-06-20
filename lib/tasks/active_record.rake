@@ -32,6 +32,7 @@ def create_meme(meme)
     io: File.open('tmp/test.mp3'),
     filename: "#{name.parameterize}.mp3",
   )
+  File.delete('tmp/test.opus', 'tmp/test.mp3')
   new_meme.save(validate: false)
 end
 
