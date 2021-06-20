@@ -9,7 +9,7 @@ namespace :active_record do
       'https://memebot.nyc3.digitaloceanspaces.com/memebot/memes.json'
     memes =
       JSON.parse(URI.parse(meme_source_url).open.read, create_additions: true)
-    memes.first(1).each { |meme| create_meme(meme) }
+    memes.each { |meme| create_meme(meme) }
   end
 end
 
@@ -22,7 +22,7 @@ def create_meme(meme)
   meme_url_prefix = 'https://memebot.nyc3.digitaloceanspaces.com/memebot/audio/'
   meme_url = "#{meme_url_prefix}#{name}.opus"
   IO.copy_stream(URI.parse(meme_url).open, 'tmp/test.opus')
-  `ffmpeg -i tmp/test.opus tmp/test.mp3`
+  `ffmpeg -i tmp/test.opus tmp/test.mp3 -hide_banner -loglevel error`
   new_meme.updated_at = DateTime.now
   new_meme.audio_opus.attach(
     io: File.open('tmp/test.opus'),
