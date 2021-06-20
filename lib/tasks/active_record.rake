@@ -34,6 +34,7 @@ def create_meme(meme)
   )
   File.delete('tmp/test.opus', 'tmp/test.mp3')
   new_meme.save(validate: false)
+  puts name
 end
 
 # rubocop:disable Rails/SkipsModelValidations
@@ -50,7 +51,7 @@ def upsert_meme(meme)
       loudness_tp: meme['loudness']['tp'],
       loudness_thresh: meme['loudness']['thresh'],
     },
-    unique_by: :name,
+    unique_by: [:name]
   )
 end
 # rubocop:enable Rails/SkipsModelValidations

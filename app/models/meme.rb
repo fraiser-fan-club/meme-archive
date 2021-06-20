@@ -3,7 +3,7 @@
 class Meme < ApplicationRecord
   include MemesHelper
 
-  has_many :commands
+  has_many :commands, dependent: :destroy
   has_one_attached :audio
   has_one_attached :audio_opus
   has_many :meme_tags
@@ -27,6 +27,8 @@ class Meme < ApplicationRecord
   after_validation :format_source_url
   before_create :scrape_audio
   before_update :scrape_audio, if: :should_update_audio?
+
+  before_destroy :remove_tags
 
   # Override save to handle commands not being unique
   def save(**options)
@@ -148,5 +150,9 @@ class Meme < ApplicationRecord
     self.loudness_lra = metadata[:loudness][:lra]
     self.loudness_tp = metadata[:loudness][:tp]
     self.loudness_thresh = metadata[:loudness][:thresh]
+  end
+
+  def remove_tags
+    destroy_tag_associations(tags)
   end
 end
