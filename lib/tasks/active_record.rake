@@ -11,8 +11,9 @@ namespace :active_record do
       JSON.parse(URI.parse(meme_source_url).open.read, create_additions: true)
     first = args.offset.blank? ? 0 : args.offset.to_i
     last = args.limit.blank? ? -1 : first + args.limit.to_i
-    selected_memes = memes[first, last]
+    selected_memes = memes[first..last]
     puts "Adding memes from #{first} to #{last}"
+    puts selected_memes
     selected_memes.each { |meme| create_meme(meme) }
   end
 end
