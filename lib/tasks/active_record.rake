@@ -13,7 +13,6 @@ namespace :active_record do
     last = args.limit.blank? ? -1 : first + args.limit.to_i
     selected_memes = memes[first..last]
     puts "Adding memes from #{first} to #{last}"
-    puts selected_memes
     selected_memes.each { |meme| create_meme(meme) }
   end
 end
