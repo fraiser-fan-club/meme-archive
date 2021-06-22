@@ -13,7 +13,12 @@ namespace :active_record do
     last = args.limit.blank? ? -1 : first + args.limit.to_i
     selected_memes = memes[first..last]
     puts "Adding memes from #{first} to #{last}"
-    selected_memes.each { |meme| create_meme(meme) }
+    selected_memes.each_index do |index|
+      meme = selected_memes[index]
+      print "#{index + first} #{meme['name']}"
+      create_meme(meme)
+      puts ' ✔'
+    end
   end
 end
 
@@ -24,7 +29,6 @@ def create_meme(meme_attributes)
   create_tags(meme, meme_attributes)
   attach_audio(meme)
   meme.save!(validate: false)
-  puts meme.name
 end
 
 def build_meme(meme_attributes)
@@ -33,7 +37,7 @@ def build_meme(meme_attributes)
     {
       name: meme_attributes['name'],
       private: meme_attributes['private'],
-      created_at: meme_attributes['createdAt'],
+      created_at: get_created_at(meme_attributes),
       updated_at: DateTime.now,
       duration: duration_to_secs(meme_attributes['duration']),
       loudness_i: loudness['i'],
@@ -43,6 +47,14 @@ def build_meme(meme_attributes)
     },
   )
   Meme.find_by(name: meme_attributes['name'])
+end
+
+def get_created_at(meme_attributes)
+  if meme_attributes['createdAt'].is_a?(String)
+    meme_attributes['createdAt']
+  else
+    meme_attributes['createdAt']['$date']
+  end
 end
 
 def attach_audio(meme)
