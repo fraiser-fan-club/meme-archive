@@ -10,7 +10,7 @@ namespace :active_record do
     memes =
       JSON.parse(URI.parse(meme_source_url).open.read, create_additions: true)
     first = args.offset.blank? ? 0 : args.offset.to_i
-    last = args.limit.blank? ? -1 : first + args.limit.to_i
+    last = args.limit.blank? ? -1 : first + args.limit.to_i - 1
     selected_memes = memes[first..last]
     puts "Adding memes from #{first} to #{last}"
     selected_memes.each_index do |index|
