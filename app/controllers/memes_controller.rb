@@ -10,7 +10,7 @@ class MemesController < ApplicationController
 
   # GET /memes or /memes.json
   def index
-    @memes = Meme.all
+    @memes = Meme.paginate(page: params[:page])
   end
 
   # GET /memes/1 or /memes/1.json
@@ -78,11 +78,12 @@ class MemesController < ApplicationController
   end
 
   def set_embed_url
-    @embed_url = if @meme.source_url.blank?
-      'ubFq-wV3Eic'
-    else 
-      get_video_id(URI(@meme.source_url))
-    end
+    @embed_url =
+      if @meme.source_url.blank?
+        'ubFq-wV3Eic'
+      else
+        get_video_id(URI(@meme.source_url))
+      end
   end
 
   def meme_params
