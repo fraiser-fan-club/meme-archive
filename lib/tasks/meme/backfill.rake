@@ -2,23 +2,11 @@ require 'json/add/date_time'
 require Rails.root.join('app/helpers/memes_helper')
 include MemesHelper
 
-namespace :active_record do
+namespace :meme do
   desc 'Adds meme from legacy memebot'
-  task :add_memes, %i[offset limit] => :environment do |_, args|
-    meme_source_url =
-      'https://memebot.nyc3.digitaloceanspaces.com/memebot/memes.json'
-    memes =
-      JSON.parse(URI.parse(meme_source_url).open.read, create_additions: true)
-    first = args.offset.blank? ? 0 : args.offset.to_i
-    last = args.limit.blank? ? -1 : first + args.limit.to_i - 1
-    selected_memes = memes[first..last]
-    puts "Adding memes from #{first} to #{last}"
-    selected_memes.each_index do |index|
-      meme = selected_memes[index]
-      print "#{index + first} #{meme['name']}"
-      create_meme(meme)
-      puts ' ✔'
-    end
+  task :backfill, %i[offset limit] => :environment do |_, args|
+    filler = MemeFiller.new(args)
+    filler.process { |meme_attrs| create_meme(meme_attrs) }
   end
 end
 

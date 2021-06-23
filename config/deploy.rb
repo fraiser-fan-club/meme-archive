@@ -1,14 +1,14 @@
 # config valid for current version and patch releases of Capistrano
-lock "~> 3.16.0"
+lock '~> 3.16.0'
 
-set :application, "meme-archive"
-set :repo_url, "https://github.com/fraiser-fan-club/meme-archive.git"
+set :application, 'meme-archive'
+set :repo_url, 'https://github.com/fraiser-fan-club/meme-archive.git'
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, "/home/memelord/meme-archive"
+set :deploy_to, '/home/memelord/meme-archive'
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
@@ -24,7 +24,16 @@ set :deploy_to, "/home/memelord/meme-archive"
 append :linked_files, 'config/master.key', 'db/production.sqlite3'
 
 # Default value for linked_dirs is []
-append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system', 'public/uploads', 'node_modules'
+append :linked_dirs,
+       'log',
+       'tmp/pids',
+       'tmp/cache',
+       'tmp/sockets',
+       'vendor/bundle',
+       '.bundle',
+       'public/system',
+       'public/uploads',
+       'node_modules'
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -41,27 +50,13 @@ append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bund
 set :rbenv_type, :user
 set :rbenv_ruby, File.read('.ruby-version').strip
 set :rbenv_prefix, '/usr/bin/rbenv exec'
-set :rbenv_map_bins, %w{rake gem bundle ruby rails}
+set :rbenv_map_bins, %w[rake gem bundle ruby rails]
 set :rbenv_roles, :all # default value
 
 set :puma_systemctl_user, :user
 set :puma_init_active_record, true
 
-set :puma_service_unit_env_vars, %w[
-  DISCORD_APP=memebot
-]
-
-namespace :deploy do
-  namespace :check do
-    before :linked_files, :set_master_key do
-      on roles(:app), in: :sequence, wait: 10 do
-        unless test("[ -f #{shared_path}/config/master.key ]")
-          upload! 'config/master.key', "#{shared_path}/config/master.key"
-        end
-      end
-    end
-  end
-end
+set :puma_service_unit_env_vars, %w[DISCORD_APP=memebot]
 
 namespace :deploy do
   after :restart, :clear_cache do
@@ -70,36 +65,6 @@ namespace :deploy do
       # within release_path do
       #   execute :rake, 'cache:clear'
       # end
-    end
-  end
-    
-  task :seed do
-    on primary fetch(:migration_role) do
-      within release_path do
-        with rails_env: fetch(:rails_env)  do
-          execute :rake, 'db:seed'
-        end
-      end
-    end
-  end
-
-  task :purge_unattached do
-    on roles(:all) do
-      within release_path do
-        with rails_env: fetch(:rails_env)  do
-          execute :rake, 'active_storage:purge_unattached'
-        end
-      end
-    end
-  end
-
-  task :add_memes do
-    on roles(:all) do
-      within release_path do
-        with rails_env: fetch(:rails_env)  do
-          execute :rake, 'active_record:add_memes'
-        end
-      end
     end
   end
 end
