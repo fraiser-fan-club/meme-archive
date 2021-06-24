@@ -1,3 +1,7 @@
+<%= form_with url: memes_path, :method => 'get' do |form|  %>
+  <%= form.search_field :s, value: params[:s], placeholder: "Search", class: 'memes-search' %>
+<% end %>
+
 <p id="notice"><%= notice %></p>
 
 <% @memes.each do |meme| %>
@@ -18,8 +22,6 @@
     </div>
   </div>
 <% end %>
-
-<br>
 
 <%= will_paginate @memes %>
 

@@ -10,7 +10,7 @@ class MemesController < ApplicationController
 
   # GET /memes or /memes.json
   def index
-    @memes = Meme.paginate(page: params[:page])
+    @memes = Meme.search(params[:s]).paginate(page: params[:page])
   end
 
   # GET /memes/1 or /memes/1.json

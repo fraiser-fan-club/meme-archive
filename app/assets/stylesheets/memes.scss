@@ -71,3 +71,19 @@
   height: 30px;
   display: none;
 }
+
+.memes-search {
+  width: 100%;
+  background: $yellow;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 0;
+  font-size: 26px;
+  font-family: $serif;
+  border-radius: 7px;
+  margin-top: 10px;
+
+  &::placeholder {
+    color: $gray;
+  }
+}

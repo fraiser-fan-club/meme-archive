@@ -40,11 +40,16 @@ class Meme < ApplicationRecord
 
   def tags_attributes=(attributes)
     tags = attributes.values
-    tags_d, tags_c = tags.partition do |tag| 
-      tag.key?('_destroy') ? tag['_destroy'].to_i.positive? : false
-    end
+    tags_d, tags_c =
+      tags.partition do |tag|
+        tag.key?('_destroy') ? tag['_destroy'].to_i.positive? : false
+      end
     destroy_tag_associations(tags_d)
     create_tag_associations(tags_c)
+  end
+
+  def self.search(search)
+    search.present? ? where('name LIKE ?', "%#{search}%") : all
   end
 
   private
@@ -52,14 +57,14 @@ class Meme < ApplicationRecord
   def create_tag_associations(tags)
     tags.each do |tag_attr|
       tag = Tag.find_or_create_by(name: tag_attr['name'])
-      MemeTag.find_or_create_by({meme: self, tag: tag})
+      MemeTag.find_or_create_by({ meme: self, tag: tag })
     end
   end
 
   def destroy_tag_associations(tags)
     tags.each do |tag_attr|
       tag = Tag.find_by(name: tag_attr['name'])
-      MemeTag.destroy_by({meme: self, tag: tag})
+      MemeTag.destroy_by({ meme: self, tag: tag })
       tag.destroy if MemeTag.where(tag: tag).count <= 0
     end
   end
