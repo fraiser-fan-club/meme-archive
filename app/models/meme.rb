@@ -13,15 +13,15 @@ class Meme < ApplicationRecord
   validates_associated :commands, :tags
 
   validates :name, presence: true, uniqueness: true
-  validates :source_url, presence: true
   validates :start,
             :end,
-            presence: true,
             format: {
               with: /\A(?:(?:\d{1,}:)?\d{1,2}:\d{2}(?:\.\d+)?|\d+(?:\.\d+)?)\z/,
               messgae: 'must have format [HH:]MM:SS[.m...] or S+[.m...]',
-            }
+            },
+            allow_blank: true
   validates :commands, presence: true
+  validate :source_or_audio
   validate :source_url_is_from_youtube
 
   after_validation :format_source_url
@@ -69,6 +69,21 @@ class Meme < ApplicationRecord
     end
   end
 
+  def source?
+    source_url.present? && start.present? && self.end.present?
+  end
+
+  def audio?
+    audio.attached? && audio_opus.attached?
+  end
+
+  def source_or_audio
+    return if source? || audio?
+    errors.add(:source_url, :blank) if source_url.blank?
+    errors.add(:start, :blank) if start.blank?
+    errors.add(:end, :blank) if self.end.blank?
+  end
+
   def source_url_is_from_youtube
     return if source_url.blank?
     uri = URI(source_url)
@@ -81,7 +96,7 @@ class Meme < ApplicationRecord
   end
 
   def format_source_url
-    return if errors.any?
+    return if errors.any? || source_url.blank?
     uri = URI(source_url)
     id = get_video_id(uri)
     self.source_url = "https://www.youtube.com/watch?v=#{id}"
@@ -92,6 +107,7 @@ class Meme < ApplicationRecord
   end
 
   def scrape_audio
+    return unless source?
     set_path
     metadata = download_audio
     update_metadata(metadata)

@@ -20,7 +20,6 @@ class MemesController < ApplicationController
   def new
     @meme = Meme.new
     @meme.commands.build
-    @meme.tags.build
   end
 
   # GET /memes/1/edit
