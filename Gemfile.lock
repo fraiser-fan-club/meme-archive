@@ -156,7 +156,7 @@ GEM
     net-scp (3.0.0)
       net-ssh (>= 2.6.5, < 7.0.0)
     net-ssh (6.1.0)
-    nio4r (2.5.7)
+    nio4r (2.5.8)
     nokogiri (1.11.3-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.11.3-x86_64-linux)
@@ -184,7 +184,7 @@ GEM
     parser (3.0.1.1)
       ast (~> 2.4.1)
     public_suffix (4.0.6)
-    puma (5.3.1)
+    puma (5.6.4)
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
@@ -325,7 +325,7 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   omniauth-discord
   omniauth-rails_csrf_protection
-  puma (~> 5.0)
+  puma (~> 5.6)
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.1)
   rubocop
